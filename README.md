@@ -47,6 +47,10 @@ Edit .env and set a strong, private API_SECRET_KEY.
 
 Never commit .env or publish its secret values.
 
+Return to the platform directory:
+
+    cd ../paynest-platform
+
 ## 3. Start the application
 
 From the paynest-platform directory, run:
