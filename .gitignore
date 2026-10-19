@@ -1,0 +1,16 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+*.tfvars
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Local reports and generated files
+health-reports/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
