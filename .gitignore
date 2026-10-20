@@ -14,3 +14,9 @@ health-reports/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Terraform generated files
+**/.terraform/*
+*.tfplan
+crash.log
+crash.*.log
