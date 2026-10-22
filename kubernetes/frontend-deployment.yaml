@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paynest-frontend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paynest-frontend
+  template:
+    metadata:
+      labels:
+        app: paynest-frontend
+    spec:
+      serviceAccountName: paynest-app
+      automountServiceAccountToken: false
+      containers:
+        - name: frontend
+          image: christianobij/zuriapp-frontend:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

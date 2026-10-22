@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: paynest-backend
+  namespace: default
+  labels:
+    release: paynest-monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      monitoring: paynest-backend
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

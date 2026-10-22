@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paynest-backend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paynest-backend
+  template:
+    metadata:
+      labels:
+        app: paynest-backend
+    spec:
+      serviceAccountName: paynest-app
+      automountServiceAccountToken: false
+      containers:
+        - name: backend
+          image: christianobij/zuriapp-backend:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: paynest-backend-config
+          env:
+            - name: API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paynest-backend-secret
+                  key: API_SECRET_KEY
