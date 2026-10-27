@@ -392,6 +392,35 @@ The project incorporates several security practices:
 
 Secrets, tokens, private keys, and AWS credentials must never be committed to the repositories or included in public documentation.
 
+### AWS Secrets Manager Integration and Security Testing
+
+The backend application was configured to use an application secret stored in AWS Secrets Manager.
+
+**Implementation:**
+
+* Stored the application secret in AWS Secrets Manager under `paynest/dev/app-secret`.
+* Used the EC2 instance IAM role, `paynest-dev-ec2-role`, to authorize access to the secret.
+* Verified that the EC2 instance could retrieve the secret without printing its value.
+* Configured the backend Docker container with the `API_SECRET_KEY` environment variable.
+* Removed the temporary secret environment file after container configuration.
+
+**Verification results:**
+
+| Test                                                               | Expected result      | Observed result |
+| ------------------------------------------------------------------ | -------------------- | --------------- |
+| Retrieve the secret using the EC2 IAM role                         | Successful retrieval | Passed          |
+| Submit a request to `/api/cart/validate` with valid authentication | HTTP 200             | Passed          |
+| Submit a request to `/api/cart/validate` without authentication    | HTTP 401             | Passed          |
+| Check the website's HTTP response                                  | HTTP 200             | Passed          |
+
+These tests confirm that the application secret is accessible through the configured IAM role, the protected endpoint enforces authentication, and the website remains accessible after the backend configuration change.
+
+**Security considerations:**
+
+Secret values must not be printed in terminal output, committed to source control, or included in public documentation. The temporary environment file used during configuration was deleted after the replacement container was started.
+
+The current implementation passes the secret to the container through an environment variable. Users with sufficient Docker privileges may be able to inspect container configuration and access that value. For a stronger production implementation, retrieve secrets at runtime through a controlled mechanism and minimize their exposure in container configuration and process environments.
+
 ## 15. Project Verification Summary
 
 | Component                            | Status                     |
