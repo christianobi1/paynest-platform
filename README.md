@@ -457,3 +457,21 @@ The PayNest Technologies Zuri Market DevOps capstone demonstrates an end-to-end 
 
 The project provides practical experience in deploying and operating an application while applying DevOps automation and security practices.
 
+
+## 17. Git Branching and Pull Request Workflow
+
+Project changes should be developed on feature branches rather than directly on the `main` branch.
+
+The recommended workflow is:
+
+1. Create a feature branch from `main`.
+2. Make the required changes and test them locally.
+3. Commit the changes with a clear, descriptive commit message.
+4. Push the feature branch to GitHub.
+5. Open a Pull Request against `main`.
+6. Review the proposed changes, add review comments, and address any feedback.
+7. Merge the Pull Request after the changes have been reviewed and verified.
+
+This workflow improves traceability, supports collaborative review, and reduces the risk of unreviewed changes entering the main branch.
+
+**Evidence for submission:** Retain the Pull Request URL, review comments, commit history, and merge status as evidence of the development workflow.
