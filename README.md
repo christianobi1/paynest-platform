@@ -49,6 +49,40 @@ GitHub Actions workflows validate the applications, build container images, and 
 
 Terraform manages the AWS infrastructure, while Kubernetes manifests define application deployments, services, configuration, and access control. Prometheus and Grafana provide monitoring and visualization.
 
+### Architecture Diagram
+
+```mermaid
+flowchart TB
+    Developer[Developer] --> GitHub[GitHub Repositories]
+    GitHub --> Actions[GitHub Actions CI/CD]
+    Actions --> Scans[Trivy Vulnerability Scans]
+    Scans --> Registry[(Docker Hub)]
+
+    Registry --> EC2[ AWS EC2 Instance ]
+    User[Customer Browser] --> Nginx[Nginx Frontend Container]
+    EC2 --> Nginx
+    EC2 --> Backend[Node.js Backend Container]
+    Nginx --- DockerNet[Docker Network]
+    Backend --- DockerNet
+
+    EC2 --> IAM[IAM Instance Role]
+    IAM --> Secrets[(AWS Secrets Manager)]
+    Secrets -->|API_SECRET_KEY| Backend
+
+    GitHub --> Terraform[Terraform]
+    Terraform --> VPC[PayNest VPC]
+    Terraform --> State[(S3 Terraform State)]
+
+    subgraph Local["Local Development - Docker Desktop"]
+        K8s[Kubernetes Deployments and Services]
+        Prometheus[Prometheus]
+        Grafana[Grafana Dashboard]
+        K8s --> Prometheus --> Grafana
+    end
+```
+
+**Environment note:** AWS EC2 hosts the application, while Kubernetes and its monitoring stack run locally on Docker Desktop.
+
 ### Application Request Flow
 
 1. A user accesses the frontend through a web browser.
