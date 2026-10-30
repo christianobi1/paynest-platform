@@ -49,6 +49,40 @@ GitHub Actions workflows validate the applications, build container images, and 
 
 Terraform manages the AWS infrastructure, while Kubernetes manifests define application deployments, services, configuration, and access control. Prometheus and Grafana provide monitoring and visualization.
 
+### Architecture Diagram
+
+```mermaid
+flowchart TB
+    Developer[Developer] --> GitHub[GitHub Repositories]
+    GitHub --> Actions[GitHub Actions CI/CD]
+    Actions --> Scans[Trivy Vulnerability Scans]
+    Scans --> Registry[(Docker Hub)]
+
+    Registry --> EC2[ AWS EC2 Instance ]
+    User[Customer Browser] --> Nginx[Nginx Frontend Container]
+    EC2 --> Nginx
+    EC2 --> Backend[Node.js Backend Container]
+    Nginx --- DockerNet[Docker Network]
+    Backend --- DockerNet
+
+    EC2 --> IAM[IAM Instance Role]
+    IAM --> Secrets[(AWS Secrets Manager)]
+    Secrets -->|API_SECRET_KEY| Backend
+
+    GitHub --> Terraform[Terraform]
+    Terraform --> VPC[PayNest VPC]
+    Terraform --> State[(S3 Terraform State)]
+
+    subgraph Local["Local Development - Docker Desktop"]
+        K8s[Kubernetes Deployments and Services]
+        Prometheus[Prometheus]
+        Grafana[Grafana Dashboard]
+        K8s --> Prometheus --> Grafana
+    end
+```
+
+**Environment note:** AWS EC2 hosts the application, while Kubernetes and its monitoring stack run locally on Docker Desktop.
+
 ### Application Request Flow
 
 1. A user accesses the frontend through a web browser.
@@ -457,3 +491,21 @@ The PayNest Technologies Zuri Market DevOps capstone demonstrates an end-to-end 
 
 The project provides practical experience in deploying and operating an application while applying DevOps automation and security practices.
 
+
+## 17. Git Branching and Pull Request Workflow
+
+Project changes should be developed on feature branches rather than directly on the `main` branch.
+
+The recommended workflow is:
+
+1. Create a feature branch from `main`.
+2. Make the required changes and test them locally.
+3. Commit the changes with a clear, descriptive commit message.
+4. Push the feature branch to GitHub.
+5. Open a Pull Request against `main`.
+6. Review the proposed changes, add review comments, and address any feedback.
+7. Merge the Pull Request after the changes have been reviewed and verified.
+
+This workflow improves traceability, supports collaborative review, and reduces the risk of unreviewed changes entering the main branch.
+
+**Evidence for submission:** Retain the Pull Request URL, review comments, commit history, and merge status as evidence of the development workflow.
