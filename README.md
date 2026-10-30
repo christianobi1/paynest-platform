@@ -180,7 +180,7 @@ When running the local Docker Compose configuration:
 * Backend store endpoint: http://localhost:5000/api/store
 * Backend products endpoint: http://localhost:5000/api/products
 
-The store endpoint was verified to return a successful JSON response:
+The local Docker Compose store endpoint was verified to return a successful JSON response. Its default store name was My Store. The AWS deployment was separately configured and verified to return Zuri Market:
 
 ```json
 {
@@ -372,11 +372,10 @@ Prometheus serves as the metrics collection and querying system, while Grafana p
 
 The configured dashboard includes panels for:
 
-* Running pods
-* Application pods
-* Unhealthy application pods
-* CPU usage
-* Memory usage
+* Kubernetes pod health
+* Backend HTTP request rate
+* Backend HTTP error rate
+* P95 backend request latency
 
 Prometheus is configured as the Grafana data source.
 
@@ -436,7 +435,7 @@ The backend application was configured to use an application secret stored in AW
 * Used the EC2 instance IAM role, `paynest-dev-ec2-role`, to authorize access to the secret.
 * Verified that the EC2 instance could retrieve the secret without printing its value.
 * Configured the backend Docker container with the `API_SECRET_KEY` environment variable.
-* Removed the temporary secret environment file after container configuration.
+
 
 **Verification results:**
 
@@ -451,7 +450,7 @@ These tests confirm that the application secret is accessible through the config
 
 **Security considerations:**
 
-Secret values must not be printed in terminal output, committed to source control, or included in public documentation. The temporary environment file used during configuration was deleted after the replacement container was started.
+Secret values must not be printed in terminal output, committed to source control, or included in public documentation. The replacement backend was configured using the secret retrieved from AWS Secrets Manager. The previously exposed API secret was replaced with a new secret.
 
 The current implementation passes the secret to the container through an environment variable. Users with sufficient Docker privileges may be able to inspect container configuration and access that value. For a stronger production implementation, retrieve secrets at runtime through a controlled mechanism and minimize their exposure in container configuration and process environments.
 
